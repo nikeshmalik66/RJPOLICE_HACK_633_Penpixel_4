@@ -4,7 +4,10 @@
 # IPC GPT🚨👮‍♂️🔍
 
 ## Demo Video
-[![Watch the demo video](https://i9.ytimg.com/vi_webp/eXPqDlV-shw/mqdefault.webp?v=65818aac&sqp=CPCUhqwG&rs=AOn4CLDkV3EmV_pD30KaRXW5oyTtEnLvpw)](https://youtu.be/eXPqDlV-shw)
+
+https://github.com/nikeshmalik66/RJPOLICE_HACK_633_Penpixel_4/assets/84899873/8abbd94e-dc31-48ee-8f4d-3c718c376023
+
+[[Watch the demo video on Youtube!]](https://youtu.be/eXPqDlV-shw)
 
 
 ## Introduction 🌟
