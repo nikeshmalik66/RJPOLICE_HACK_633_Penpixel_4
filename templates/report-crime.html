@@ -1,0 +1,132 @@
+<!-- crime-report.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+        <title>Crime Reporting Portal</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="static\css\styles.css">
+    </head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Crime Reporting Form</h2>
+        <form id="crimeReportForm">
+
+            <!-- FIR Details -->
+            <h3>FIR Details</h3>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="firNo">FIR No</label>
+                        <input type="text" class="form-control" id="firNo" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4    ">
+                    <div class="form-group">
+                        <label for="district">District</label>
+                        <input type="text" class="form-control" id="district" required>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" class="form-control" id="date" required>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Incident Details -->
+            <br>
+            <h3>Incident Details</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="dateOfOccurrence">Date of Occurrence</label>
+                        <input type="date" class="form-control" id="dateOfOccurrence" required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="day">Day</label>
+                        <input type="text" class="form-control" id="day" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="placeOfOccurrence">Place of Occurrence</label>
+                <input type="text" class="form-control" id="placeOfOccurrence" required>
+            </div>
+
+            <br>
+            <!-- Complainant Information -->
+            <h3>Complainant Information</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="nationality">Nationality</label>
+                        <input type="text" class="form-control" id="nationality" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <input type="text" class="form-control" id="occupation" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea class="form-control" id="address" required></textarea>
+            </div>
+
+            <!-- Crime Description -->
+            <h3>Crime Description</h3>
+            <div class="form-group">
+                <label for="reportedCrime">Reported Crime Scenario</label>
+                <textarea class="form-control" id="reportedCrime" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="propertiesInvolved">Properties/Things Involved</label>
+                <textarea class="form-control" id="propertiesInvolved" required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <div id="loadingAnimation" style="display: none;">
+            <img src="static/images/loading.gif" alt="Loading...">
+        </div>
+
+        <div id="reportOutput" class="mt-4">
+            <!-- The Output will be displayed here -->
+        </div>
+    </div>
+
+    <script src="static\js\index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
