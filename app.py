@@ -4,9 +4,11 @@ from flask import Flask, request, jsonify, render_template
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user, UserMixin
 from flask_sqlalchemy import SQLAlchemy
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
-import pandas as pd
+import os
+from PIL import Image
+import pytesseract
 import csv
+import pandas as pd
 import re
 
 app = Flask(__name__)
@@ -72,6 +74,41 @@ def ipcDataset():
 
     return render_template('ipc-dataset.html', headers=headers, data=data)
 
+# App route for OCR crime reporting page
+@app.route("/ocr-analysis")
+def ocrCrimeAnalysis():
+    return render_template("ocr-recognition.html")
+
+# Initialize the tesseract reader
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+os.environ['TESSDATA_PREFIX'] = r"C:\Program Files\Tesseract-OCR\tessdata"
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"})
+    file = request.files['file']
+    file_type = request.form['fileType']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"})
+
+    if file_type == 'image':
+        # Save the file temporarily
+        temp_path = os.path.join('uploads', file.filename)
+        file.save(temp_path)
+
+        # Perform OCR on the image
+        image = Image.open(temp_path)
+        extracted_text = pytesseract.image_to_string(image, lang='hin+eng')
+
+        # os.remove(temp_path) # Optionally, delete the temporary file
+
+        generated_output = generate(extracted_text)
+        return jsonify({"message": extracted_text, "generated_output": generated_output})
+
+    # Add logic for PDF 
+
+    return jsonify({"message": "File uploaded but not processed"})
+
 # api endpoint for storing form details into the database
 @app.route('/submit_report', methods=['POST'])
 def submit_report():
@@ -83,6 +120,12 @@ def submit_report():
     db.session.add(report)
     db.session.commit()
     return jsonify({'success': 'Report submitted successfully'}), 200
+
+# App route for OCR crime reporting page
+@app.route("/fir-form")
+def firForm():
+    return render_template("fir-form.html")
+
 
 if __name__ == '__main__':
     with app.app_context():
