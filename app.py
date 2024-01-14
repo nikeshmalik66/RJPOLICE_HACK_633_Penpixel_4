@@ -9,7 +9,10 @@ from PIL import Image
 import pytesseract
 import csv
 import pandas as pd
-import re
+from datetime import datetime
+from flask import send_file, make_response
+import io
+import pdfkit 
 
 app = Flask(__name__)
 
@@ -53,12 +56,72 @@ def reportCrime():
 # App route for processing the reported crime
 @app.route('/process_reported_crime', methods=['POST'])
 def process_reported_crime():
-                            
-    data = request.json
+    data = request.get_json()
+    
     reported_crime = data.get('reportedCrime')          # Extract the reportedCrime data from the POST request
-    ipc_sections= generate(reported_crime)              # Using the generate function from main.py to process the reported crime
+    ipc_sections= generate(reported_crime)               # Using the generate function from main.py to process the reported crime
+
+    # Extract data from form fields
+    fir_no = data.get('firNo') 
+    district = data.get('district')
+    date = datetime.strptime(data.get('date'), '%Y-%m-%d')
+    day = data.get('day')
+    date_of_occurrence = datetime.strptime(data.get('dateOfOccurrence'), '%Y-%m-%d')
+    place_of_occurrence = data.get('placeOfOccurrence')
+    name = data.get('name')
+    dob = datetime.strptime(data.get('dob'), '%Y-%m-%d')
+    nationality = data.get('nationality')
+    occupation = data.get('occupation')
+    address = data.get('address')
+    reported_crime = data.get('reportedCrime')
+    properties_involved = data.get('propertiesInvolved')
+    model_output = data.get('modelOutput')
+
+    # Create a new CrimeReport instance with the form data
+    new_report = CrimeReport(
+        firNo=fir_no,
+        district=district,
+        date=date,
+        day=day,
+        dateOfOccurrence=date_of_occurrence,
+        placeOfOccurrence=place_of_occurrence,
+        name=name,
+        dob=dob,
+        nationality=nationality,
+        occupation=occupation,
+        address=address,
+        reportedCrime=reported_crime,
+        propertiesInvolved=properties_involved,
+        modelOutput=model_output
+    )
+
+    # Add the new report to the database session and commit
+    db.session.add(new_report)
+    db.session.commit()
+
+    # Redirect to a confirmation page or flash a success message
+    # flash('Crime report submitted successfully!')                       
+                            
+          
     return jsonify({'result': ipc_sections})
 
+# Api endpoint for submitting selected ipc sections 
+@app.route('/submit_ipc_sections', methods=['POST'])
+def submit_ipc_sections():
+    data = request.get_json()
+    fir_no = data.get('firNo')
+    ipc_sections = data.get('ipcSections')
+
+    # Fetch the report using the FIR number
+    report = CrimeReport.query.filter_by(firNo=fir_no).first()
+    if report:
+        # Update the report with the selected IPC sections
+        report.modelOutput = ipc_sections
+        db.session.commit()
+        return jsonify({'status': 'success', 'message': 'IPC sections updated successfully'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Report not found'}), 404
+    
 @app.route('/ipc-dataset')
 def ipcDataset():
 
@@ -110,21 +173,98 @@ def upload_file():
     return jsonify({"message": "File uploaded but not processed"})
 
 # api endpoint for storing form details into the database
-@app.route('/submit_report', methods=['POST'])
-def submit_report():
-    data = request.json
-    if CrimeReport.query.get(data['firNo']):
-        return jsonify({'error': 'FIR No already exists'}), 409  
+# @app.route('/submit_crime_report', methods=['POST'])
+# def submit_crime_report():
+#     if request.method == 'POST':
+#         # Extract data from form fields
+#         fir_no = request.form['firNo']
+#         district = request.form['district']
+#         date = datetime.strptime(request.form['date'], '%Y-%m-%d')
+#         day = request.form['day']
+#         date_of_occurrence = datetime.strptime(request.form['dateOfOccurrence'], '%Y-%m-%d')
+#         place_of_occurrence = request.form['placeOfOccurrence']
+#         name = request.form['name']
+#         dob = datetime.strptime(request.form['dob'], '%Y-%m-%d')
+#         nationality = request.form['nationality']
+#         occupation = request.form['occupation']
+#         address = request.form['address']
+#         reported_crime = request.form['reportedCrime']
+#         properties_involved = request.form['propertiesInvolved']
+#            = request.form['modelOutput']
 
-    report = CrimeReport(**data)
-    db.session.add(report)
-    db.session.commit()
-    return jsonify({'success': 'Report submitted successfully'}), 200
+#         # Create a new CrimeReport instance with the form data
+#         new_report = CrimeReport(
+#             firNo=fir_no,
+#             district=district,
+#             date=date,
+#             day=day,
+#             dateOfOccurrence=date_of_occurrence,
+#             placeOfOccurrence=place_of_occurrence,
+#             name=name,
+#             dob=dob,
+#             nationality=nationality,
+#             occupation=occupation,
+#             address=address,
+#             reportedCrime=reported_crime,
+#             propertiesInvolved=properties_involved,
+#             modelOutput=model_output
+#         )
 
+#         # Add the new report to the database session and commit
+#         db.session.add(new_report)
+#         db.session.commit()
+
+#         # Redirect to a confirmation page or flash a success message
+#         flash('Crime report submitted successfully!')
+#         return redirect(url_for('report_crime_form'))  # Redirect to the index or another appropriate page
+
+#     return redirect(url_for('report_crime_form'))
 # App route for OCR crime reporting page
 @app.route("/fir-form")
 def firForm():
     return render_template("fir-form.html")
+
+# App route for displating fir report
+@app.route('/display_fir/<fir_no>')
+def display_fir(fir_no):
+    # Fetch the FIR report using the FIR number
+    report = CrimeReport.query.filter_by(firNo=fir_no).first()
+
+    if report:
+        # Render a template with the report details
+        return render_template('display-report.html', report=report)
+    else:
+        return 'Report not found', 404
+
+
+# Configure the path to the wkhtmltopdf executable
+path_wkhtmltopdf = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
+config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+
+@app.route('/download_fir_pdf/<fir_no>')
+def download_fir_pdf(fir_no):
+    # Fetch the FIR report using the FIR number
+    report = CrimeReport.query.filter_by(firNo=fir_no).first()
+
+    if report:
+        # Prepare HTML content for PDF generation
+        rendered_html = render_template('display-report.html', report=report)
+
+        # Convert the HTML to PDF
+        pdf_content = pdfkit.from_string(rendered_html, False, options={"enable-local-file-access": ""}, configuration=config)
+
+        # Create an in-memory file
+        pdf_file = io.BytesIO(pdf_content)
+
+        # Create a response object and set the correct headers
+        response = make_response(pdf_file.getvalue())
+        response.headers['Content-Type'] = 'application/pdf'
+        response.headers['Content-Disposition'] = f'attachment; filename=FIR_Report_{fir_no}.pdf'
+
+        return response
+    else:
+        return 'Report not found', 404
+
 
 
 if __name__ == '__main__':

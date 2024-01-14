@@ -1,6 +1,7 @@
 from huggingface_hub import InferenceClient
-import gradio as gr
+import re
 
+#Mistral Model AI
 client = InferenceClient("mistralai/Mixtral-8x7B-Instruct-v0.1")
 
 def format_prompt(message):
@@ -38,7 +39,11 @@ def generate(
         # yield output
     
     # print(output)
-    return output   
+        
+    # Using regex to find all occurrences of "Section XYZ"
+    ipc_sections = re.findall(r'Section \d+[A-Z]*', output)
+    
+    return ipc_sections   
 
 
 

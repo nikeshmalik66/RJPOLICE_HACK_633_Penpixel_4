@@ -13,7 +13,7 @@
     <div class="container mt-5">
         <h2 class="text-center mb-4">FIRST INFORMATION REPORT</h2>
         <h4 class="text-center mb-4">(Under Section 154 Cr.P.C)</h4>
-        <form id="crimeReportForm">
+        <form id="crimeReportForm" action="/submit_crime_report">
 
             <!-- FIR Details -->
             <h3>FIR Details</h3>
@@ -130,15 +130,27 @@
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">Submit</button>
+
+            <div id="loadingAnimation" style="display: none;">
+                <img src="static/images/loading.gif" alt="Loading...">
+            </div>
+    
+            <div id="reportOutput" class="mt-4">
+                <!-- The Output will be displayed here -->
+            </div>
         </form>
 
-        <div id="loadingAnimation" style="display: none;">
-            <img src="static/images/loading.gif" alt="Loading...">
-        </div>
-
-        <div id="reportOutput" class="mt-4">
-            <!-- The Output will be displayed here -->
-        </div>
+        <form id="ipcSectionsForm">
+            <!-- Hidden field to store the FIR number -->
+            <input type="hidden" id="firNoForIpc" name="firNo">
+        
+            <!-- Container for the IPC sections checkboxes -->
+            <div id="ipc-sections-container"></div>
+        
+            <!-- Submit button for the IPC sections form -->
+            <button type="submit" class="btn btn-primary">Submit IPC Sections</button>
+        </form>
+        
     </div>
 
     <script src="static\js\index.js"></script>

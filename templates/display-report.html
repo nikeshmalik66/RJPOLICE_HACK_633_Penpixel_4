@@ -1,0 +1,142 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale-1.0">
+        <title>FIR Generation</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="static\css\styles.css">
+    </head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">FIRST INFORMATION REPORT</h2>
+        <h4 class="text-center mb-4">(Under Section 154 Cr.P.C)</h4>
+        <form id="genrateFIRPdf" action="">
+
+            <!-- FIR Details -->
+            <h3>FIR Details</h3>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="firNo">FIR No : {{report.firNo}} </label> 
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="district">District : {{ report.district }}</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="ps">P.S : -</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="year">Year : year</label>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="date">Date : {{ report.date }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IPC Section Applicable -->
+            <br>
+            <h3>Applicable Sections</h3>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="dateOfOccurrence">IPC Section Applicable : {{ report.modelOutput }}</label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Incident Details -->
+            <br>
+            <h3>Incident Details</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="dateOfOccurrence">Date of Occurrence : {{ report.dateOfOccurrence }}</label>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="day">Day : day</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="placeOfOccurrence">Place of Occurrence : {{ report.placeOfOccurrence }}</label>
+            </div>
+
+            <br>
+            <!-- Complainant Information -->
+            <h3>Complainant Information</h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name">Name : {{ report.name }}</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="dob">Date of Birth : {{ report.dob }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="nationality">Nationality : {{ report.nationality}}</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="occupation">Occupation : {{ report.occupation }}</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address">Address : {{ report.address }}</label>
+            </div>
+
+            <!-- Crime Description -->
+            <h3>Crime Description</h3>
+            <div class="form-group">
+                <label for="reportedCrime">Reported Crime Scenario : {{ report.reportedCrime }}</label>
+            </div>
+            <div class="form-group">
+                <label for="propertiesInvolved">Properties/Things Involved : {{ report.propertiesInvolved }}</label>
+            </div>
+
+            <!-- Submit Button -->
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            <br>
+            <a href="/download_fir_pdf/{{ report.firNo }}" class="btn btn-primary">Download PDF</a>
+            <!-- <div id="loadingAnimation" style="display: none;">
+                <img src="static/images/loading.gif" alt="Loading...">
+            </div> -->
+        </form>
+
+        
+    </div>
+
+    <script src="static\js\index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
